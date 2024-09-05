@@ -1,0 +1,43 @@
+# Ignore everything
+**
+
+# Allow only these directories
+!volman
+!Dockerfile
+!pyproject.toml
+!poetry.lock
+
+# Now - ignore unnecessary files inside allowed directories
+# This goes after the allowed directories
+
+# Exclude python generated files
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+**/.pytest_cache/
+**/env/
+**/build/
+**/develop-eggs/
+**/dist/
+**/downloads/
+**/eggs/
+**/.eggs/
+**/lib/
+**/lib64/
+**/parts/
+**/sdist/
+**/var/
+**/wheels/
+**/*.egg-info/
+**/.installed.cfg
+**/*.egg
+
+# Exclude temporary vi files
+**/*~
+
+# Exclude output files
+**/*.out
+
+# Exclude auto-generated Finder files on Mac OS
+**/.DS_Store
+**/Thumbs.db
