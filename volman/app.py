@@ -1,18 +1,24 @@
-from 
+from functools import lru_cache
+
 from flask import Flask
 from flask_alembic import Alembic
 
 from volman import Settings
+from volman.models import db
+
 
 @lru_cache
 def get_settings():
     return Settings()
 
+
 def create_app():
     app = Flask("volman")
 
+    settings = get_settings()
+
     app.config.update(
-        SQLALCHEMY_DATABASE_URI=f"postgresql+psycopg2://{user}:{pswd}@{host}:{port}/{name}"
+        SQLALCHEMY_DATABASE_URI=f"postgresql+psycopg2://{settings.database_user}:{settings.database_pswd}@{settings.database_host}:{settings.database_port}/{settings.database_name}"
     )
     app.config.update(SQLALCHEMY_TRACK_MODIFICATIONS=False)
     # app.config.update(SQLALCHEMY_ECHO=service_config.debug_mode is True)  # Extreme debug only
@@ -20,9 +26,6 @@ def create_app():
     app.config["ALEMBIC"] = dict(script_location="connectors/migrations")
 
     db.init_app(app)
-
-    # Add error handler
-    app.register_error_handler(Exception, handle_exception)
 
     # Apply database migrations
     app.logger.info("Update database tables")
@@ -33,22 +36,4 @@ def create_app():
         # alembic.revision("enter Message here")
         alembic.upgrade()
 
-    api.register_blueprint(common.api, url_prefix=service_config.base_url_prefix)
-    api.register_blueprint(
-        file_connectors.api, url_prefix=f"{service_config.base_url_prefix}/file"
-    )
-    api.register_blueprint(
-        api_connectors.api, url_prefix=f"{service_config.base_url_prefix}/api-conn"
-    )
-
-    api.register_blueprint(
-        api_token_gen.api, url_prefix=f"{service_config.base_url_prefix}/access"
-    )
-
-    # Add response logging
-    app.after_request(after_request)
-
-    # Add tracing
-    FlaskInstrumentor().instrument_app(app, excluded_urls=".*/healthcheck")
-    RequestsInstrumentor().instrument()
     return app
