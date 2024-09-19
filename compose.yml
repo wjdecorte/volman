@@ -55,6 +55,43 @@ services:
       postgres:
         condition: service_healthy
 
+  db-init:
+    image: volman
+    environment:
+      DATABASE_HOST: postgres_container
+      DATABASE_PORT: 5432
+      DATABASE_USER: volman
+      DATABASE_PSWD: changeme
+      DATABASE_NAME: volman
+      FLASK_APP: 'volman.app:create_app()'
+    volumes:
+      - .:/home/app_user/code
+    command: [ "flask", "db", "upgrade" ]
+    networks:
+      - local-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  db-rev:
+    image: volman
+    environment:
+      DATABASE_HOST: postgres_container
+      DATABASE_PORT: 5432
+      DATABASE_USER: volman
+      DATABASE_PSWD: changeme
+      DATABASE_NAME: volman
+      REVISION_MSG: ${REVISION_MSG:-"made changes"}
+      FLASK_APP: 'volman.app:create_app()'
+    volumes:
+      - .:/home/app_user/code
+    command: [ "flask", "db", "revision", "${REVISION_MSG}" ]
+    networks:
+      - local-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 networks:
   local-net:
     name: local-net

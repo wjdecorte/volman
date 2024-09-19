@@ -32,7 +32,7 @@ def create_app():
     alembic.init_app(app, run_mkdir=False)
     with app.app_context():
         # alembic.downgrade()
-        alembic.revision("Base Tables")
-        # alembic.upgrade()
+        # alembic.revision("Base Tables")
+        alembic.upgrade()
 
     return app

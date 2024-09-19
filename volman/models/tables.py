@@ -1,7 +1,7 @@
 from datetime import date, datetime
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import relationship, Mapped, mapped_column, DeclarativeBase
+from sqlalchemy.orm import relationship, Mapped, DeclarativeBase
 
 from sqlalchemy import inspect
 
@@ -61,6 +61,7 @@ volunteer_to_team_bridge = db.Table(
     db.metadata,
     db.Column("volunteer_id", db.Integer, db.ForeignKey("volunteer.id")),
     db.Column("team_id", db.Integer, db.ForeignKey("team.id")),
+    db.Column("team_lead_flag", db.Boolean),
 )
 
 volunteer_to_skill_bridge = db.Table(
@@ -92,6 +93,7 @@ class Volunteer(BaseColumnMixin, TableOpsMixin, db.Model):
     ishelters_created_dt = db.Column(db.DateTime)
     ishelters_category_type = db.Column(db.String(100))
     application_received_date = db.Column(db.Date)
+    maddie_certifications_received_date = db.Column(db.Date)
 
     contact_entries = relationship(
         "Contact",
@@ -102,18 +104,16 @@ class Volunteer(BaseColumnMixin, TableOpsMixin, db.Model):
 
 
 class Contact(BaseColumnMixin, TableOpsMixin, db.Model):
-    # volunteer_id = db.Column(db.Integer, db.ForeignKey("volunteer.id"))
-    contact_date: Mapped[date]
-    contact_notes: Mapped[str]
+    volunteer_id = db.Column(db.Integer, db.ForeignKey("volunteer.id"))
+    contact_date = db.Column(db.Date)
+    contact_notes = db.Column(db.String(2000))
 
 
 class Team(BaseColumnMixin, TableOpsMixin, db.Model):
-    __tablename__ = "team"
-
     team_name = db.Column(db.String(500))
+    team_description = db.Column(db.String(2000))
 
 
 class Skill(BaseColumnMixin, TableOpsMixin, db.Model):
-    __tablename__ = "skill"
-
     skill_name = db.Column(db.String(500))
+    skill_description = db.Column(db.String(2000))
