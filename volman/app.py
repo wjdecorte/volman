@@ -4,7 +4,7 @@ from flask import Flask
 from flask_alembic import Alembic
 
 from volman import Settings
-from volman.models import db
+from volman.models.tables import db
 
 
 @lru_cache
@@ -23,17 +23,16 @@ def create_app():
     app.config.update(SQLALCHEMY_TRACK_MODIFICATIONS=False)
     # app.config.update(SQLALCHEMY_ECHO=service_config.debug_mode is True)  # Extreme debug only
     app.config.update(SQLALCHEMY_ENGINE_OPTIONS={"pool_pre_ping": True})
-    app.config["ALEMBIC"] = dict(script_location="connectors/migrations")
+    app.config["ALEMBIC"] = dict(script_location="migrations")
 
     db.init_app(app)
 
     # Apply database migrations
-    app.logger.info("Update database tables")
     alembic = Alembic()
     alembic.init_app(app, run_mkdir=False)
     with app.app_context():
         # alembic.downgrade()
-        # alembic.revision("enter Message here")
-        alembic.upgrade()
+        alembic.revision("Base Tables")
+        # alembic.upgrade()
 
     return app

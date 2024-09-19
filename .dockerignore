@@ -6,6 +6,7 @@
 !Dockerfile
 !pyproject.toml
 !poetry.lock
+!README.md
 
 # Now - ignore unnecessary files inside allowed directories
 # This goes after the allowed directories

@@ -1,19 +1,24 @@
-version: '3.8'
-
 services:
   postgres:
     container_name: postgres_container
     image: postgres:16
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-volman}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: volman
       PGDATA: /data/postgres
     volumes:
       - .pgdata:/data/postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "volman" ]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     ports:
       - "5432:5432"
     networks:
-      - postgres
+      - local-net
     restart: unless-stopped
 
   pgadmin:
@@ -29,11 +34,30 @@ services:
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
-      - postgres
+      - local-net
     restart: unless-stopped
 
+  app:
+    container_name: volman
+    image: volman
+    environment:
+      DATABASE_HOST: postgres_container
+      DATABASE_PORT: 5432
+      DATABASE_USER: volman
+      DATABASE_PSWD: changeme
+      DATABASE_NAME: volman
+    volumes:
+      - .:/home/app_user/code
+    command: gunicorn --config volman/gunicorn_config.py 'volman.app:create_app()' --reload
+    networks:
+      - local-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 networks:
-  postgres:
+  local-net:
+    name: local-net
     driver: bridge
 
 volumes:

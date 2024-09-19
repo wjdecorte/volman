@@ -78,5 +78,5 @@ dmypy.json
 environment.yml
 
 # Postgres Data
-/pgdata/
+/.pgdata/
 /data/

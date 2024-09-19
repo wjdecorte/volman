@@ -33,16 +33,6 @@ class HTTPTestError(AppBaseError):
 
 
 @dataclass(frozen=True)
-class ConnectorNotFoundError(AppBaseError):
-    http_code: int = 404
-
-
-@dataclass(frozen=True)
-class ConnectorAlreadyExistsError(AppBaseError):
-    http_code: int = 409
-
-
-@dataclass(frozen=True)
 class InvalidValueError(AppBaseError):
     http_code: int = 400
 
@@ -54,65 +44,7 @@ class InvalidActionError(AppBaseError):
 
 
 @dataclass(frozen=True)
-class FileWriteError(AppBaseError):
-    message: str = "Failed to write the file"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class MissingPluginError(AppBaseError):
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
 class ExecutionError(AppBaseError):
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class AuthenticationError(AppBaseError):
-    message: str = "Error occurred while fetching access token"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class DatasetFetchError(AppBaseError):
-    message: str = "Error occurred while fetching dataset : %message%"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class InvalidTokenError(AppBaseError):
-    message: str = "Invalid Token : %message%"
-    http_code: int = 401
-
-
-@dataclass(frozen=True)
-class InvalidSchemaError(AppBaseError):
-    message: str = "Invalid Schema : %message%"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class SchemaFetchError(AppBaseError):
-    message: str = "Schema fetch error : %message%"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class APIKeyNotFoundError(AppBaseError):
-    http_code: int = 404
-
-
-@dataclass(frozen=True)
-class APIKeyDeletedError(AppBaseError):
-    message: str = "API key is in deleted status"
-    http_code: int = 500
-
-
-@dataclass(frozen=True)
-class APIKeyClientIdMismatchError(AppBaseError):
-    message: str = "Client Id Mismatch"
     http_code: int = 500
 
 
