@@ -64,9 +64,10 @@ services:
       DATABASE_PSWD: changeme
       DATABASE_NAME: volman
       FLASK_APP: 'volman.app:create_app()'
+      ALEMBIC_CMD: ${ALEMBIC_CMD:-upgrade}
     volumes:
       - .:/home/app_user/code
-    command: [ "flask", "db", "upgrade" ]
+    command: [ "flask", "db", "${ALEMBIC_CMD}" ]
     networks:
       - local-net
     depends_on:
