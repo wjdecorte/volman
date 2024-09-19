@@ -31,8 +31,6 @@ def create_app():
     alembic = Alembic()
     alembic.init_app(app, run_mkdir=False)
     with app.app_context():
-        # alembic.downgrade()
-        # alembic.revision("Base Tables")
         alembic.upgrade()
 
     return app
